@@ -5,7 +5,7 @@
 <style>
 body{
   text-align:center;
-  background:#transparent;
+  background:transparent;
   margin:0;
   padding:20px;
 }
@@ -16,18 +16,32 @@ body{
 
 .number{
   font-family:'Outfit', sans-serif;
-  font-size:80px;
-  font-weight:400;
+  font-size:clamp(30px, 4.2vw, 54px);
+  font-weight:300;
   color:#FFFFFF;
+  line-height:1;
+  white-space:nowrap;
 }
 
 .label{
   font-family:'Comfortaa', sans-serif;
-  font-size:20px;
+  font-size:clamp(12px, 1.4vw, 18px);
   font-weight:600;
   color:#FFFFFF;
+  line-height:1.25;
 }
 
+html, body{
+  width:100%;
+  max-width:100%;
+  margin:0;
+  overflow-x:hidden;
+}
+
+*{
+  box-sizing:border-box;
+}
+  
 </style>
 </head>
 <body>
