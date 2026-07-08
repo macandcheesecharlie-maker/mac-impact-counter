@@ -85,15 +85,16 @@ body {
 </div>
 
 <script>
-window.addEventListener('load', function () {
-  var counters = document.querySelectorAll('.number');
+(function () {
+  var countersStarted = false;
 
-  for (var i = 0; i < counters.length; i++) {
-    startCounter(counters[i]);
-  }
-
-  function startCounter(counter) {
+  function animateCounter(counter) {
     var target = parseInt(counter.getAttribute('data-target'), 10);
+
+    if (isNaN(target)) {
+      return;
+    }
+
     var current = 0;
     var steps = 100;
     var increment = Math.ceil(target / steps);
@@ -109,7 +110,50 @@ window.addEventListener('load', function () {
       counter.textContent = current.toLocaleString();
     }, 20);
   }
-});
+
+  function startCounters() {
+    if (countersStarted) {
+      return;
+    }
+
+    countersStarted = true;
+
+    var counters = document.querySelectorAll('.number');
+
+    for (var i = 0; i < counters.length; i++) {
+      animateCounter(counters[i]);
+    }
+  }
+
+  function setupScrollTrigger() {
+    var firstCounter = document.querySelector('.counter');
+
+    if (!firstCounter) {
+      return;
+    }
+
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          startCounters();
+          observer.disconnect();
+        }
+      }, {
+        threshold: 0.35
+      });
+
+      observer.observe(firstCounter);
+    } else {
+      startCounters();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupScrollTrigger);
+  } else {
+    setupScrollTrigger();
+  }
+})();
 </script>
 
 </body>
