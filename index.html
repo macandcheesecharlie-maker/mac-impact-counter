@@ -24,6 +24,12 @@ body {
   padding: 10px 8px;
 }
 
+#impact-counter-widget {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 .counter {
   margin: 22px 0;
 }
@@ -69,54 +75,61 @@ body {
 
 <body>
 
-<div class="counter">
-  <div class="number" data-target="103480">0</div>
-  <div class="label">Total Servings / Meals Donated</div>
-</div>
+<div id="impact-counter-widget">
 
-<div class="counter">
-  <div class="number" data-target="26000">0</div>
-  <div class="label">Total Boxes Donated</div>
-</div>
+  <div class="counter">
+    <div class="number" data-target="103480">0</div>
+    <div class="label">Total Servings / Meals Donated</div>
+  </div>
 
-<div class="counter">
-  <div class="number" data-target="28198300">0</div>
-  <div class="label">Total Noodles Donated</div>
+  <div class="counter">
+    <div class="number" data-target="26000">0</div>
+    <div class="label">Total Boxes Donated</div>
+  </div>
+
+  <div class="counter">
+    <div class="number" data-target="28198300">0</div>
+    <div class="label">Total Noodles Donated</div>
+  </div>
+
 </div>
 
 <script>
 (function () {
-  var countersStarted = false;
+  var hasStarted = false;
 
   function animateCounter(counter) {
     var target = parseInt(counter.getAttribute('data-target'), 10);
+    var duration = 1400;
+    var startTime = null;
 
-    if (isNaN(target)) {
-      return;
-    }
-
-    var current = 0;
-    var steps = 100;
-    var increment = Math.ceil(target / steps);
-
-    var timer = setInterval(function () {
-      current += increment;
-
-      if (current >= target) {
-        current = target;
-        clearInterval(timer);
+    function updateCounter(timestamp) {
+      if (!startTime) {
+        startTime = timestamp;
       }
 
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      var easedProgress = 1 - Math.pow(1 - progress, 3);
+      var current = Math.floor(easedProgress * target);
+
       counter.textContent = current.toLocaleString();
-    }, 20);
+
+      if (progress < 1) {
+        requestAnimationFrame(updateCounter);
+      } else {
+        counter.textContent = target.toLocaleString();
+      }
+    }
+
+    requestAnimationFrame(updateCounter);
   }
 
   function startCounters() {
-    if (countersStarted) {
+    if (hasStarted) {
       return;
     }
 
-    countersStarted = true;
+    hasStarted = true;
 
     var counters = document.querySelectorAll('.number');
 
@@ -125,33 +138,35 @@ body {
     }
   }
 
-  function setupScrollTrigger() {
-    var firstCounter = document.querySelector('.counter');
+  function setupVisibilityTrigger() {
+    var widget = document.getElementById('impact-counter-widget');
 
-    if (!firstCounter) {
+    if (!widget) {
       return;
     }
 
     if ('IntersectionObserver' in window) {
       var observer = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) {
+        var entry = entries[0];
+
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.65) {
           startCounters();
           observer.disconnect();
         }
       }, {
-        threshold: 0.35
+        threshold: [0, 0.25, 0.5, 0.65, 0.75, 1]
       });
 
-      observer.observe(firstCounter);
+      observer.observe(widget);
     } else {
       startCounters();
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupScrollTrigger);
+    document.addEventListener('DOMContentLoaded', setupVisibilityTrigger);
   } else {
-    setupScrollTrigger();
+    setupVisibilityTrigger();
   }
 })();
 </script>
