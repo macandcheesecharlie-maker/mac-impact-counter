@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body{
+  font-family: Arial, sans-serif;
+  text-align:center;
+  background:white;
+  margin:0;
+  padding:20px;
+}
+
+.counter{
+  margin:30px 0;
+}
+
+.number{
+  font-size:48px;
+  font-weight:bold;
+  color:#F7941D;
+}
+
+.label{
+  font-size:18px;
+  color:#17375E;
+}
+</style>
+</head>
+<body>
+
+<div class="counter">
+  <div class="number" data-target="103,480">0</div>
+  <div class="label">Total Servings / Meals Donated</div>
+</div>
+
+<div class="counter">
+  <div class="number" data-target="26,000">0</div>
+  <div class="label">Total Boxes Donated</div>
+</div>
+
+<div class="counter">
+  <div class="number" data-target="28,198,300">0</div>
+  <div class="label">Total Noodles Donated</div>
+</div>
+
+<script>
+const counters = document.querySelectorAll('.number');
+
+counters.forEach(counter => {
+  const target = +counter.getAttribute('data-target');
+  let current = 0;
+
+  const update = () => {
+    const increment = target / 100;
+
+    if(current < target){
+      current += increment;
+      counter.innerText =
+        Math.floor(current).toLocaleString();
+      requestAnimationFrame(update);
+    } else {
+      counter.innerText =
+        target.toLocaleString() + '+';
+    }
+  };
+
+  update();
+});
+</script>
+
+</body>
+</html>
