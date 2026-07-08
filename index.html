@@ -3,7 +3,7 @@
 <head>
 <style>
 body{
-  font-family: Arial, sans-serif;
+  font-family: Verdana, sans-serif;
   text-align:center;
   background:white;
   margin:0;
@@ -17,12 +17,12 @@ body{
 .number{
   font-size:48px;
   font-weight:bold;
-  color:#F7941D;
+  color:#FFFFFF;
 }
 
 .label{
   font-size:18px;
-  color:#17375E;
+  color:#FFFFFF;
 }
 </style>
 </head>
@@ -60,7 +60,7 @@ counters.forEach(counter => {
       requestAnimationFrame(update);
     } else {
       counter.innerText =
-        target.toLocaleString() + '+';
+        target.toLocaleString();
     }
   };
 
