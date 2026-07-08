@@ -1,0 +1,1 @@
+# mac-impact-counter
